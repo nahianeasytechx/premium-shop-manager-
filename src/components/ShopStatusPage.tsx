@@ -9,9 +9,9 @@ export function ShopStatusPage() {
 
   const getFloorName = (floor: number) => {
     switch(floor) {
-      case 0: return 'Ground Floor';
-      case 1: return '1st Floor';
-      case 2: return '2nd Floor';
+      case 1: return 'Ground Floor';
+      case 2: return '1st Floor';
+      case 3: return '2nd Floor';
       default: return `Floor ${floor}`;
     }
   };

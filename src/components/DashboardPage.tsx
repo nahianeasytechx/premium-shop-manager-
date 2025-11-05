@@ -1,4 +1,4 @@
-import { Store, Grid3x3, CheckCircle, XCircle } from 'lucide-react';
+import { Store, Grid3x3, CheckCircle, XCircle, ShoppingBag, Utensils, Wrench, Scissors }  from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { shops } from '../data/mockData';
 
@@ -39,6 +39,13 @@ export function DashboardPage() {
     },
   ];
 
+    const categoryIcons = {
+    Retail: ShoppingBag,
+    Food: Utensils,
+    Service: Wrench,
+    Saloon: Scissors,
+  }; 
+
   return (
     <div className="space-y-6">
       <div>
@@ -50,7 +57,7 @@ export function DashboardPage() {
         {stats.map((stat, index) => (
           <Card key={index} className="border-0 shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm text-gray-600">
+              <CardTitle className="  font-bold">
                 {stat.title}
               </CardTitle>
               <div className={`p-2 rounded-lg ${stat.bgColor}`}>
@@ -64,6 +71,37 @@ export function DashboardPage() {
         ))}
       </div>
 
+
+
+
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Categories</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {['Retail', 'Food', 'Service', 'Saloon'].map((category) => {
+            const count = shops.filter(s => s.category === category).length;
+            const availableCount = shops.filter(s => s.category === category && s.status === 'available').length;
+            const Icon = (categoryIcons as Record<string, any>)[category] ?? ShoppingBag;
+            return (
+              <Card key={category} className="border-0 shadow-md hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2 flex justify-between">
+                  <CardTitle className=" ">{category}</CardTitle>
+                  <div className="p-2 rounded-lg bg-gray-50">
+                    <Icon className="h-5 w-5 " />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="text-3xl text-light text-blue-600">{count}</div>
+                    <div className="text-sm text-gray-600">
+                      {availableCount} available • {count - availableCount} booked
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border-0 shadow-md">
           <CardHeader>
@@ -98,14 +136,14 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {['Retail', 'Food', 'Service'].map((category) => {
+              {['Retail', 'Food', 'Service','Saloon'].map((category) => {
                 const count = shops.filter(s => s.category === category).length;
                 const percentage = (count / totalShops) * 100;
                 return (
                   <div key={category}>
                     <div className="flex justify-between mb-1">
                       <span className="text-sm">{category}</span>
-                      <span className="text-sm text-gray-500">{count} shops</span>
+                      <span className="text-sm ">{count} shops</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div

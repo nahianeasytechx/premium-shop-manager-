@@ -24,6 +24,9 @@ export function AvailableShopsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSqft, setSelectedSqft] = useState<string>('all');
 
+  // Extract unique sqft values from shops and sort them
+  const uniqueSqft = Array.from(new Set(shops.map(shop => shop.sqft))).sort();
+
   const filteredShops = shops.filter((shop) => {
     if (selectedFloor !== 'all' && shop.floor !== parseInt(selectedFloor, 10)) {
       return false;
@@ -31,24 +34,8 @@ export function AvailableShopsPage() {
     if (selectedCategory !== 'all' && shop.category !== selectedCategory) {
       return false;
     }
-    if (selectedSqft !== 'all') {
-      const sqftRange = selectedSqft.split('-');
-      const min = parseInt(sqftRange[0], 10);
-      const max = parseInt(sqftRange[1], 10);
-
-      // Ensure shop.sqft is treated as a number (handles strings like "400" or "400 sqft")
-      const shopSqft =
-        typeof shop.sqft === 'string'
-          ? parseInt(shop.sqft.replace(/\D/g, ''), 10)
-          : shop.sqft;
-
-      if (isNaN(shopSqft) || isNaN(min) || isNaN(max)) {
-        return false;
-      }
-
-      if (shopSqft < min || shopSqft > max) {
-        return false;
-      }
+    if (selectedSqft !== 'all' && shop.sqft !== selectedSqft) {
+      return false;
     }
     return true;
   });
@@ -62,7 +49,7 @@ export function AvailableShopsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="mb-2">Available Shops</h1>
+        <h1 className="mb-2 text-3xl font-bold">Available Shops</h1>
         <p className="text-gray-600">Browse and filter available shops</p>
       </div>
 
@@ -114,10 +101,11 @@ export function AvailableShopsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Sizes</SelectItem>
-                  <SelectItem value="0-400">0 - 400 sqft</SelectItem>
-                  <SelectItem value="401-500">401 - 500 sqft</SelectItem>
-                  <SelectItem value="501-600">501 - 600 sqft</SelectItem>
-                  <SelectItem value="601-1000">601+ sqft</SelectItem>
+                  {uniqueSqft.map((sqft) => (
+                    <SelectItem key={sqft} value={sqft}>
+                      {sqft}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -145,40 +133,50 @@ export function AvailableShopsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Shop Number</TableHead>
-                <TableHead>Floor</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Square Feet</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredShops.map((shop) => (
-                <TableRow key={shop.id}>
-                  <TableCell>{shop.shopNumber}</TableCell>
-                  <TableCell>Floor {shop.floor}</TableCell>
-                  <TableCell>{shop.category}</TableCell>
-                  <TableCell>{shop.sqft} sqft</TableCell>
-                  <TableCell>${shop.price.toLocaleString()}</TableCell>
-                  <TableCell>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        shop.status === 'available'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {shop.status === 'available' ? 'Available' : 'Booked'}
-                    </span>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Shop Number</TableHead>
+                  <TableHead>Floor</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Square Feet</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredShops.length > 0 ? (
+                  filteredShops.map((shop) => (
+                    <TableRow key={shop.id}>
+                      <TableCell className="font-medium">{shop.shopNumber}</TableCell>
+                      <TableCell>Floor {shop.floor}</TableCell>
+                      <TableCell>{shop.category}</TableCell>
+                      <TableCell>{shop.sqft}</TableCell>
+                      <TableCell>৳{shop.price.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            shop.status === 'available'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {shop.status === 'available' ? 'Available' : 'Booked'}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                      No shops found matching your filters
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
