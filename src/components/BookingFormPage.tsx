@@ -61,13 +61,20 @@ export function BookingFormPage({ onBookingSuccess }: BookingFormPageProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="container mx-auto space-y-6">
+      <div className='text-center'>
         <h1 className="mb-2">Book a Shop</h1>
-        <p className="text-gray-600">Fill in the details to complete your booking</p>
+        <p className="text-gray-600">Fill in the details to complete your booking Using this google form</p>
+     
+     <div className="max-w-2xl mx-auto mt-4">
+     <div className="ml-2">
+       <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScIafrFk73laV93JSF42gvNVV7V9AIWbvXH8jFYFkoummIeiw/viewform?embedded=true" width="100%" height="1094" frameBorder="0">
+       Loading…
+       </iframe>
+     </div>
+     </div>
       </div>
-
-      <div className="max-w-2xl mx-auto">
+      {/* <div className="max-w-2xl mx-auto">
         <Card className="border-0 shadow-md">
           <CardHeader>
             <CardTitle>Booking Form</CardTitle>
@@ -174,7 +181,7 @@ export function BookingFormPage({ onBookingSuccess }: BookingFormPageProps) {
             </ul>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }
